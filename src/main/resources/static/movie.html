@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>电影详情</title>
+		<link rel="icon" href="./img/电影.png" sizes="32x32">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/star-rating.css" />
+		<script src="js/star-rating.js" type="text/javascript"></script>
+		<style type="text/css">
+			#showall p {
+				font-size: 14px;
+			}
+
+			.review_hr {
+				border: 0;
+				border-bottom: 1px solid #cac9c9;
+			}
+
+			.review {
+				font-size: medium;
+				font-weight: 500px;
+			}
+		</style>
+	</head>
+	<body style="background-color: #f0f3f5;">
+		<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="font-size: large;">
+			<!-- Brand/logo -->
+			<a class="navbar-brand" href="index.html">douban</a>
+			<!-- Links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" href="search.html">搜索</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="movieclass.html">电影分类</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="#">登录</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">注册</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="container-fluid" id="app">
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8">
+					<div class="row mb-2 mt-5">
+						<div class="col">
+							<div class="row">
+								<div class="col">
+									<h2 style="font-weight: 700;">{{title}}({{year}})</h2>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-3">
+							<img style="height: 300px; width: 200px;" :src="images">
+						</div>
+						<div class="col-4" id="showall">
+							<p>导演:&nbsp &nbsp {{directors}}</p>
+							<p>主演:&nbsp &nbsp {{casts.join('/')}}</p>
+							<p>类型:&nbsp &nbsp {{genres.join('/')}}</p>
+							<p>制片国家/地区:&nbsp &nbsp {{countries.join('/')}}</p>
+							<p>语言:&nbsp &nbsp {{languages.join('/')}}</p>
+							<p>上映日期:&nbsp &nbsp {{pubdates.join('/')}}</p>
+							<P>片长:&nbsp &nbsp {{durations.join('/')}}</P>
+							<hr>
+							<button type="button" class="btn btn-primary" v-on:click="tomovie">我想看</button>
+						</div>
+						<div class="col-2">
+							<input id="input-21d" :value="rating" type="text" class="rating" data-min=0 data-max=10 data-step=0.1 data-size="sm"
+							 title="" readonly>
+							<hr>
+							<p>评分总人数:&nbsp{{ratings_count}}</p>
+						</div>
+					</div>
+					<hr>
+					<div class="row mb-2 mt-5">
+						<div class="col" style="font-size: x-large; color: green;">剧情简介</div>
+					</div>
+					<div class="mui-row">
+						<div class="col" style="font-size: medium;font-weight: 550;">&nbsp &nbsp &nbsp &nbsp{{summary}}</div>
+					</div>
+					<div class="row mb-5 mt-5 " style="font-size: x-large; color: green;">{{title}}的短评</div>
+
+					<div class="row review">{{reviews_1}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_2}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_3}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_4}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_5}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_6}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_7}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_8}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_9}}</div>
+					<hr class="review_hr">
+					<div class="row review">{{reviews_10}}</div>
+
+				</div>
+				<div class="col-2"></div>
+			</div>
+		</div>
+
+		<script src="./js/vue.js"></script>
+		<script src="./js/axios.min.js"></script>
+		<script>
+			function getQueryVariable(variable) {
+				var query = window.location.search.substring(1);
+				var vars = query.split("&");
+				for (var i = 0; i < vars.length; i++) {
+					var pair = vars[i].split("=");
+					if (pair[0] == variable) {
+						return pair[1];
+					}
+				}
+				return (false);
+			}
+
+			var app;
+			app = new Vue({
+				el: '#app',
+				data: {
+					// title: '无间道', //片名
+					// year: 2002,
+					// images: 'https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2564556863.jpg',
+					// directors: '刘伟强', //导演
+					// casts: ['刘德华', '梁朝伟', '黄秋生', '曾志伟'], //主演
+					// genres: ['剧情', '犯罪', '悬疑'], //类型
+					// countries: ['中国香港'], //制片国家地区
+					// languages: ['粤语'],
+					// pubdates: ['2002-12-12(中国香港)', '2003-09-05(中国大陆)'], //上映日期
+					// durations: ['101分钟', '97分钟(导演剪辑版)'], //片长
+					// videos: 'https://m.miguvideo.com/mgs/msite/prd/detail.html?cid=622793074&pwId=d01197d3076b4164af82983c408bb996',
+					// rating: 9.2,
+					// ratings_count: 841331,
+					// summary: '1991年，香港黑帮三合会会员刘健明（刘德华）听从老大韩琛（曾志伟）的吩咐，加入警察部队成为黑帮卧底，韩琛许诺刘健明会帮其在七年后晋升为见习督察。1992年，警察训练学校优秀学员陈永仁（梁朝伟）被上级要求深入到三合会做卧底，终极目标是成为韩琛身边的红人。2002年，两人都不负重望，也都身背重压，刘健明渐想成为一个真正的好人，陈永仁则盼着尽快回归警察身份。重案组从陈永仁手中获悉一批毒品交易情报，锁紧目标人物韩琛，没料情报被刘健明泄出，双方行动均告失败。但此事将双方均有卧底的事实暴露，引发双方高层清除内鬼的决心。命运迥异又相似的刘健明和陈永仁开始在无间道的旅程中接受严峻考验。©豆瓣',
+					// reviews_1: '董小姐:一直很喜欢陈永仁（梁朝伟）和他的前女友May（萧亚轩）巧遇的那个桥段， 陈永仁走到May跟前，停下，May挽着两个购物袋，凝望他，轻轻一笑。 陈永仁也腼腆一笑：“这么巧？” “很久没见。” “六、七年了。” “...',
+					// reviews_2: '[已注销]:十一年前，在青松观的大殿上，琛哥对着七名新人说，"出来行走江湖的，是生是死，该由自己决定。"琛哥又说，"你们跟随我的日子最短，身家最清白，以后的路怎样走，由你们自己决定。"  那一天烈日当头，神像狰牙狞...',
+					// reviews_3: 'blueroc:面对“无间道III终极无间”狂轰滥炸的宣传攻势，我有些按耐不住，I和II都看了，总体感觉不错，只是时间不凑巧，没赶上III的首映。昨晚，终于一睹庐山芳容，自己不是枪手懒得写影评，何况也写得不好，尽管社会...',
+					// reviews_4: 'Y.X.K:香港的警匪片已经成一种类型片了，在很多年的发展中，警匪片带着匪气和正气，善恶交战却往往善恶难分，这个苗头就是从无间道开始被带起来的，作为当初的救市之作，这部电影被拍了三部，还被日本、美国翻拍，成为...',
+					// reviews_5: '隆咚锵:当被人问及最喜欢的电影时，我可以毫无迟疑地告诉他，无间道。这是一部极具香港色彩的电影，正如国语班主题曲中所唱得那样，谁了解生存往往比命运还残酷，只是没有人愿意认输。这是一个有关于生存的故事，而似乎...',
+					// reviews_6: '王二仙:《无间道》来自香港，这个比世界上大部分生活水平都好的岛屿，一度是天堂的代号。几个杰出的艺人和一帮高明的商人及用心良苦的故事高手，用命运和职业的格局码出换体思维，在好人坏人之间追问、游离，终而幻灭在...',
+					// reviews_7: 'cys.tony:早在94年的《重庆森林》，梁朝伟已经凭借一个痴情警察拿到了金像奖影帝，但严格说来，直到97年左右梁生才完全进入自己的巅峰期。这个时期既有《春光乍泄》的苦情小gay，也有《暗花》这样阴暗狠毒的坏警察，《花样...',
+					// reviews_8: 'windfengnie:一遍一遍又一遍，我乐此不彼的重温着刘伟强先生的经典作品。我很喜欢《无间道》系列电影 ，其中人物性格的鲜活丰满，演员的精湛演技，剧情的波荡起伏，配乐的缥缈煽情，画面的纯净饱满......都给我留下了很深很...',
+					// reviews_9: '今晚八点:“倘若我们将时间的指针拨回到2002年12月12日，在香港电影快要被人们遗忘时，一部注定要成为经典的电影就这样横空出世了。导演刘伟强在《古惑仔》系列、《中华英雄》与《风云之雄霸天下》之后再战影坛，推出了《...',
+					// reviews_10: 'milankun:我是在HBO上面第一次看到《无间道I》的；距离它的首映，已经两年了。在没有心理准备的情况下，我竟被它稳稳地钉在电视机前面，一个半小时未曾转台。看完之后，我的感觉是，感谢《无间道》，因为，这部片子标志着...',
+					title: '', //片名
+					year: '',
+					images: '',
+					directors: '', //导演
+					casts: [], //主演
+					genres: [], //类型
+					countries: [], //制片国家地区
+					languages: [],
+					pubdates: [], //上映日期
+					durations: [], //片长
+					videos: '',
+					rating: '',
+					ratings_count: '',
+					summary: '',
+					reviews_1: '',
+					reviews_2: '',
+					reviews_3: '',
+					reviews_4: '',
+					reviews_5: '',
+					reviews_6: '',
+					reviews_7: '',
+					reviews_8: '',
+					reviews_9: '',
+					reviews_10: '',
+				},
+				methods: {
+					tomovie: function() {
+						window.location.href = this.videos;
+					},
+					movie: function() {
+						console.log("movie");
+						var that = this;
+						var id = getQueryVariable("id");
+						console.log(id)
+						axios.get('http://localhost:8080/movie/' + id, {}).then(function(response) {
+							that.title = response.data.title;
+							that.year = response.data.year;
+							that.images = response.data.images;
+							that.directors = response.data.directors;
+							that.casts = response.data.casts.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');
+							that.genres = response.data.genres.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');;
+							that.countries = response.data.countries.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');;
+							that.languages = response.data.languages.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');;
+							that.pubdates = response.data.pubdates.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');;
+							that.durations = response.data.durations.replace(/[']/g,'').replace(/[ ]/g,'').replace('[','').replace(']','').split(',');;
+							that.videos = response.data.videos;
+							that.rating = response.data.rating;
+							that.ratings_count = response.data.ratingsCount;
+							that.summary = response.data.summary;
+							that.reviews_1 = response.data.reviews_1;
+							that.reviews_2 = response.data.reviews_2;
+							that.reviews_3 = response.data.reviews_3;
+							that.reviews_4 = response.data.reviews_4;
+							that.reviews_5 = response.data.reviews_5;
+							that.reviews_6 = response.data.reviews_6;
+							that.reviews_7 = response.data.reviews_7;
+							that.reviews_8 = response.data.reviews_8;
+							that.reviews_9 = response.data.reviews_9;
+							that.reviews_10 = response.data.reviews_10;
+						})
+					}
+				},
+				created: function() {
+					this.movie();
+				}
+			})
+		</script>
+	</body>
+
+</html>

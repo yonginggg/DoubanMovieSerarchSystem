@@ -1,0 +1,83 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>spring + es 豆瓣电影搜索引擎</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--hello world 123-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>豆瓣电影主页</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="./img/电影.png" sizes="32x32">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        video {
+            position: fixed;
+            top: 5px;
+            right: 0px;
+            bottom: 0px;
+            min-width: 100%;
+            min-height: 100%;
+            height: auto;
+            width: auto;
+            /*加滤镜*/
+            /*filter: blur(15px); //背景模糊设置 */
+            /*-webkit-filter: grayscale(100%);*/
+            /*filter:grayscale(100%); //背景灰度设置*/
+            z-index: -11
+        }
+
+        source {
+            min-width: 100%;
+            min-height: 100%;
+            height: auto;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<video autoplay loop muted>
+    <source src="./img/index.mp4" type="video/mp4" />
+</video>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="font-size: large;">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="#">douban</a>
+
+    <!-- Links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="search.html">搜索</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="movieclass.html">电影分类</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="#">登录</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">注册</a>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid">
+    <h1 class="display-1" style="color: whitesmoke;text-align: center;font-weight: 800; margin-top: 200px;">豆&nbsp &nbsp瓣&nbsp &nbsp  电&nbsp &nbsp 影&nbsp &nbsp</h1>
+</div>
+</body>
+</html>
+
