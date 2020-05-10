@@ -10,7 +10,7 @@
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <style type="text/css">
-        .card:hover{
+        .card:hover {
             background-color: #6c757d;
             color: white;
             opacity: 1;
@@ -33,12 +33,17 @@
             <a class="nav-link" href="movieclass.html">电影分类</a>
         </li>
     </ul>
-    <ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto" id="login">
         <li class="nav-item">
             <a class="nav-link" href="login.html">登录</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="register.html">注册</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" id="touxiang">
+        <li class="nav-item">
+            <h3 style="color: white">Weclome Come</h3>
         </li>
     </ul>
 </nav>
@@ -64,12 +69,12 @@
                     {{ item.value }}&nbsp;&nbsp;&nbsp;
                 </label>
             </div>
-			<div class="row mt-3">
-				<label v-for="(item, index) in sort" :key="index">
-					<input type="radio" v-model="sortVal" :value="item.value" @change="getRadioVal"/>
-					{{ item.value }}&nbsp;&nbsp;&nbsp;
-				</label>
-			</div>
+            <div class="row mt-3">
+                <label v-for="(item, index) in sort" :key="index">
+                    <input type="radio" v-model="sortVal" :value="item.value" @change="getRadioVal"/>
+                    {{ item.value }}&nbsp;&nbsp;&nbsp;
+                </label>
+            </div>
             <div class="row mt-3">
                 <button type="button" class="btn btn-secondary" v-on:click="search" style="width: 1000px">搜索</button>
             </div>
@@ -96,112 +101,120 @@
             </div>
         </div>
     </div>
-    <script src="./js/vue.js"></script>
-    <script src="./js/axios.min.js"></script>
-    <script>
-        var app;
-        app = new Vue({
+</div>
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script>
+    var app;
+    app = new Vue({
 
-            el: '#app',
-            data: {
-				movielist: [],
-                genres: [
-                    {value: '全部类型'},
-                    {value: '剧情'},
-                    {value: '喜剧'},
-                    {value: '动作'},
-                    {value: '爱情'},
-                    {value: '科幻'},
-                    {value: '动画'},
-                    {value: '悬疑'},
-                    {value: '惊悚'},
-                    {value: '恐怖'},
-                    {value: '犯罪'},
-                    {value: '同性'},
-                    {value: '音乐'},
-                    {value: '歌舞'},
-                    {value: '传记'},
-                    {value: '历史'},
-                    {value: '战争'},
-                    {value: '西部'},
-                    {value: '奇幻'},
-                    {value: '冒险'},
-                    {value: '灾难'},
-                    {value: '武侠'},
-                    {value: '情色'}
-                ],
-                genresVal: '全部类型',
-                countries: [
-                    {value: '全部地区'},
-                    {value: '中国大陆'},
-                    {value: '美国'},
-                    {value: '中国香港'},
-                    {value: '中国台湾'},
-                    {value: '日本'},
-                    {value: '韩国'},
-                    {value: '英国'},
-                    {value: '法国'},
-                    {value: '德国'},
-                    {value: '意大利'},
-                    {value: '西班牙'},
-                    {value: '印度'},
-                    {value: '泰国'},
-                    {value: '俄罗斯'},
-                    {value: '伊朗'},
-                    {value: '加拿大'},
-                    {value: '澳大利亚'},
-                    {value: '爱尔兰'},
-                    {value: '瑞典'},
-                    {value: '巴西'},
-                    {value: '丹麦'}
-                ],
-                countriesVal: '全部地区',
-                year: [
-                    {value: '全部年代'},
-                    {value: '2020'},
-                    {value: '2019'},
-                    {value: '2010年代'},
-                    {value: '2000年代'},
-                    {value: '90年代'},
-                    {value: '80年代'},
-                    {value: '70年代'},
-                    {value: '60年代'},
-                    {value: '更早'}
-                ],
-                yearVal: '全部年代',
-				sort:[
-					{value: '豆瓣高分'},
-					{value: '最新上映'},
-					{value: '热门电影'},
-				],
-				sortVal: '豆瓣高分'
+        el: '#app',
+        data: {
+            movielist: [],
+            genres: [
+                {value: '全部类型'},
+                {value: '剧情'},
+                {value: '喜剧'},
+                {value: '动作'},
+                {value: '爱情'},
+                {value: '科幻'},
+                {value: '动画'},
+                {value: '悬疑'},
+                {value: '惊悚'},
+                {value: '恐怖'},
+                {value: '犯罪'},
+                {value: '同性'},
+                {value: '音乐'},
+                {value: '歌舞'},
+                {value: '传记'},
+                {value: '历史'},
+                {value: '战争'},
+                {value: '西部'},
+                {value: '奇幻'},
+                {value: '冒险'},
+                {value: '灾难'},
+                {value: '武侠'},
+                {value: '情色'}
+            ],
+            genresVal: '全部类型',
+            countries: [
+                {value: '全部地区'},
+                {value: '中国大陆'},
+                {value: '美国'},
+                {value: '中国香港'},
+                {value: '中国台湾'},
+                {value: '日本'},
+                {value: '韩国'},
+                {value: '英国'},
+                {value: '法国'},
+                {value: '德国'},
+                {value: '意大利'},
+                {value: '西班牙'},
+                {value: '印度'},
+                {value: '泰国'},
+                {value: '俄罗斯'},
+                {value: '伊朗'},
+                {value: '加拿大'},
+                {value: '澳大利亚'},
+                {value: '爱尔兰'},
+                {value: '瑞典'},
+                {value: '巴西'},
+                {value: '丹麦'}
+            ],
+            countriesVal: '全部地区',
+            year: [
+                {value: '全部年代'},
+                {value: '2020'},
+                {value: '2019'},
+                {value: '2010年代'},
+                {value: '2000年代'},
+                {value: '90年代'},
+                {value: '80年代'},
+                {value: '70年代'},
+                {value: '60年代'},
+                {value: '更早'}
+            ],
+            yearVal: '全部年代',
+            sort: [
+                {value: '豆瓣高分'},
+                {value: '最新上映'},
+                {value: '热门电影'},
+            ],
+            sortVal: '豆瓣高分'
+        },
+        methods: {
+            getMovies: function () {
+                console.log("getMovies");
+                var that = this;
+                axios.get("http://localhost:8080/blogs", {}).then(function (response) {
+                    that.movielist = response.data;
+                })
             },
-            methods: {
-                getMovies: function () {
-                    console.log("getMovies");
-                    var that = this;
-                    axios.get("http://localhost:8080/blogs", {}).then(function (response) {
-                        that.movielist = response.data;
-                    })
-                },
-                search: function () {
-					var that = this;
-					var param = {
-						"genresVal" : that.genresVal,
-						"countriesVal" : that.countriesVal,
-						"yearVal" : that.yearVal,
-						"sortVal" : that.sortVal
-					};
-					console.log(param);
-					axios.post("http://localhost:8080/choice", param).then(function(response) {
-						that.movielist = response.data;
-					})
-                },
+            search: function () {
+                var that = this;
+                var param = {
+                    "genresVal": that.genresVal,
+                    "countriesVal": that.countriesVal,
+                    "yearVal": that.yearVal,
+                    "sortVal": that.sortVal
+                };
+                console.log(param);
+                axios.post("http://localhost:8080/choice", param).then(function (response) {
+                    that.movielist = response.data;
+                })
             },
-            created: function () {
-                this.getMovies();
+        },
+        created: function () {
+            if (sessionStorage.getItem("userid") != null) {
+                document.getElementById('login').style.display = "none";
+                document.getElementById('touxiang').style.display = "";
+            } else {
+                document.getElementById('login').style.display = "";
+                document.getElementById('touxiang').style.display = "none";
             }
-        })
-    </script>
+            this.getMovies();
+        }
+    })
+</script>
 </body>
 </html>

@@ -37,12 +37,17 @@
 					<a class="nav-link" href="movieclass.html">电影分类</a>
 				</li>
 			</ul>
-			<ul class="navbar-nav ml-auto">
+			<ul class="navbar-nav ml-auto" id="login">
 				<li class="nav-item">
 					<a class="nav-link" href="login.html">登录</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="register.html">注册</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto" id="touxiang">
+				<li class="nav-item">
+					<h3 style="color: white">Weclome Come</h3>
 				</li>
 			</ul>
 		</nav>
@@ -103,16 +108,17 @@
 				data: {
 					duration: '',
 					keyword: '',
-					movielist: []
+					movielist: [],
 				},
 				methods: {
-					getMovies: function() {
-						console.log("getMovies");
-						var that = this;
-						axios.get("http://localhost:8080/movies", {}).then(function(response) {
-							that.movielist = response.data;
-						})
-					},
+					// getMovies: function() {
+					// 	console.log("getMovies");
+					// 	console.log(sessionStorage.getItem("userid"));
+					// 	var that = this;
+					// 	axios.get("http://localhost:8080/movies", {}).then(function(response) {
+					// 		that.movielist = response.data;
+					// 	})
+					// },
 					searchWithMysql: function() {
 						console.log("searchWithMysql");
 						var that = this;
@@ -140,7 +146,14 @@
 					}
 				},
 				created: function() {
-					this.getMovies();
+					// this.getMovies();
+					if(sessionStorage.getItem("userid")!=null){
+						document.getElementById('login').style.display = "none";
+						document.getElementById('touxiang').style.display = "";
+					}else{
+						document.getElementById('login').style.display = "";
+						document.getElementById('touxiang').style.display = "none";
+					}
 				}
 			})
 		</script>
