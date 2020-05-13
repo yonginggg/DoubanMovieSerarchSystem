@@ -19,7 +19,7 @@ public class EsBlog {
     @Id
     private Integer id;
 
-    private String movieId;
+    private String movie_id;
     @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String title;               //中文名
     @Field(type = FieldType.Text,analyzer = "ik_max_word")
@@ -33,14 +33,14 @@ public class EsBlog {
     private String genres;;             //类别
     private String rating;              //评分
     private String images;              //图片
-    private String collectCount;       //观看人数
+    private String collect_count;       //观看人数
     @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String countries;           //国家地区
     @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String languages;           //语言
     private String videos;              //播放链接
-    private String ratingsCount;       //评分人数
-    private String commentsCount;      //短评人数
+    private String ratings_count;       //评分人数
+    private String comments_count;      //短评人数
     @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String summary;             //简介
     private String reviews_1;           //短评

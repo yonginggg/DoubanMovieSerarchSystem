@@ -88,7 +88,8 @@
 									<h5 class="card-title">{{movie.title}}</h5>
 									<p>导演:&nbsp{{movie.directors}}</p>
 									<p>上映:&nbsp{{movie.year}}</p>
-									<a :href="'movie.html?id='+movie.movieId" style="font-weight: bold">...more</a>
+									<a class="showmysql" :href="'movie.html?id='+movie.movieId" style="font-weight: bold" >mysql</a>
+									<a class="showes ":href="'movie.html?id='+movie.movie_id" style="font-weight: bold" >elasticsearch</a>
 								</div>
 							</div>
 						</div>
@@ -109,16 +110,9 @@
 					duration: '',
 					keyword: '',
 					movielist: [],
+					searchtarget: '',
 				},
 				methods: {
-					// getMovies: function() {
-					// 	console.log("getMovies");
-					// 	console.log(sessionStorage.getItem("userid"));
-					// 	var that = this;
-					// 	axios.get("http://localhost:8080/movies", {}).then(function(response) {
-					// 		that.movielist = response.data;
-					// 	})
-					// },
 					searchWithMysql: function() {
 						console.log("searchWithMysql");
 						var that = this;
@@ -126,10 +120,11 @@
 							"type": "mysql",
 							"keyword": that.keyword
 						};
-						console.log(param);
 						axios.post("http://localhost:8080/search", param).then(function(response) {
+							console.log(response.data.list);
 							that.movielist = response.data.list;
 							that.duration = response.data.duration;
+							that.searchtarget = "mysql";
 						})
 					},
 					searchWithEs: function() {
@@ -140,9 +135,32 @@
 							"keyword": that.keyword
 						};
 						axios.post("http://localhost:8080/search", param).then(function(response) {
+							console.log(response.data.list)
 							that.movielist = response.data.list;
 							that.duration = response.data.duration;
+							that.searchtarget = "es";
 						})
+					},
+				},
+				watch:{
+					movielist: function () {
+						console.log(123)
+						this.$nextTick(function(){
+							console.log("重新渲染");
+							if(this.searchtarget=="mysql"){
+								for (var i=0;i<document.getElementsByClassName("showes").length;i++){
+									document.getElementsByClassName("showes")[i].style.display="none";
+									document.getElementsByClassName("showmysql")[i].style.display="";
+								}
+							}else if(this.searchtarget=="es"){
+								for (var i=0;i<document.getElementsByClassName("showmysql").length;i++){
+									document.getElementsByClassName("showmysql")[i].style.display="none";
+									document.getElementsByClassName("showes")[i].style.display="";
+								}
+							}
+						})
+
+
 					}
 				},
 				created: function() {
@@ -154,7 +172,8 @@
 						document.getElementById('login').style.display = "";
 						document.getElementById('touxiang').style.display = "none";
 					}
-				}
+
+				},
 			})
 		</script>
 	</body>
