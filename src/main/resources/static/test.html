@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        /* 这个是跳过渲染过程的设置 */
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="box" v-cloak>
+    <div class="search-ban">
+        <input type="text" v-model='msg' @keyup="get" @keyup.down='selDown' @keyup.up='selUp'>
+        <button >搜索</button>
+    </div>
+    <ul>
+        <li v-for='item in items'>{{item}}</li>
+    </ul>
+</div>
+</body>
+<script src="./js/vue.js"></script>
+<script>
+    new Vue({
+        el: '#box',
+        data:{
+            //存储需要显示找到的数据
+            items:[],
+            // 输入框输入数据
+            msg:'',
+            // 锁定当前的选择项索引
+            cindex:-1
+        },
+        methods:{
+            //    输入字符的执行函数
+            get(e){
+                console.log(e)
+                // 上下键return，避免和下面的选择冲突
+                if(e.keyCode==40||e.keyCode==38){
+                    return;
+                }
+                //当按回车的时候，直接跳转到百度网页
+                if(e.keyCode==13){
+                    window.open('https://www.baidu.com/s?wd='+this.msg);
+                    this.msg='';
+                }
+                this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{
+                    wd:this.msg
+                },{
+                    jsonp:'cb'
+                }).then(function (res) {
+                    this.items = res.data.s;
+                });
+            },
+            //   按下键
+            selDown(){
+                this.cindex++;
+                // 当当前索引和数据长度相等的时候，重新赋值
+                if(this.cindex==this.items.length){
+                    this.cindex = 0;
+                }
+                this.msg = this.items[this.cindex];
+            },
+            //   按上键
+            selUp(){
+                this.cindex--;
+                if(this.cindex<=-1){
+                    this.cindex=this.items.length-1;
+                }
+                this.msg = this.items[this.cindex];
+            }
+
+        }
+    });
+</script>
+</html>

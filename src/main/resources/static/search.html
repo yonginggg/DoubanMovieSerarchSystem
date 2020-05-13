@@ -1,181 +1,188 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>搜索电影</title>
-		<link rel="icon" href="./img/电影.png" sizes="32x32">
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-		<script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-		<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-		<script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-		<style type="text/css">
-			.search {
-				height: 70px;
-				font-size: 20px;
-			}
-			.card:hover{
-				background-color: #6c757d;
-				color: white;
-				opacity: 1;
-				transition-duration: 0.5s;
-				cursor: pointer;
-			}
-		</style>
-	</head>
-	<body style="background-color: #f0f3f5;">
-		<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="font-size: large;">
-			<!-- Brand/logo -->
-			<a class="navbar-brand" href="index.html">douban</a>
+<head>
+    <title>搜索电影</title>
+    <link rel="icon" href="./img/电影.png" sizes="32x32">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-			<!-- Links -->
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					<a class="nav-link" href="search.html">搜索</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="movieclass.html">电影分类</a>
-				</li>
-			</ul>
-			<ul class="navbar-nav ml-auto" id="login">
-				<li class="nav-item">
-					<a class="nav-link" href="login.html">登录</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="register.html">注册</a>
-				</li>
-			</ul>
-			<ul class="navbar-nav ml-auto" id="touxiang">
-				<li class="nav-item">
-					<h3 style="color: white">Weclome Come</h3>
-				</li>
-			</ul>
-		</nav>
-		<div class="container-fluid" id="app">
-			<div class="row">
-				<div class="col"></div>
-				<div class="col">
-					<img src="img/douban.svg" />
-				</div>
-				<div class="col"></div>
-			</div>
-			<div class="row" style="margin-top: -100px; ">
-				<div class="col-3"></div>
+    <style type="text/css">
+        .search {
+            height: 70px;
+            font-size: 20px;
+        }
 
-				<div class="col-4">
-					<input type="text" class="form-control search" placeholder="搜索内容" v-model="keyword">
-				</div>
-				<div class="col-2">
-					<button type="button" class="btn btn-secondary mb-2 search" style="margin-left: 5px;" v-on:click="searchWithMysql">
-						mysql
-					</button>
-					<button type="button" class="btn btn-secondary mb-2 search" style="margin-left: 5px;" v-on:click="searchWithEs">ES
-					</button>
-					<span style="margin-left: 10px; color: green;">耗时：{{duration}}</span>
-				</div>
-				<div class="col-3"></div>
-			</div>
-			<div class="row mt-2">
-				<div class="col-2"></div>
-				<div class="col-8">
-					<div class="row">
-						<div class="col-3 mt-2" v-for="(movie,index) in movielist" style="margin-top: 20px;">
-							<div class="card">
-<!--								<div class="card-img-top">-->
-<!--									<img :src="movie.images" style="height: auto;width: 100%" />-->
-<!--								</div>-->
-								<div class="card-body">
-									<h5 class="card-title">{{movie.title}}</h5>
-									<p>导演:&nbsp{{movie.directors}}</p>
-									<p>上映:&nbsp{{movie.year}}</p>
-									<a class="showmysql" :href="'movie.html?id='+movie.movieId" style="font-weight: bold" >mysql</a>
-									<a class="showes ":href="'movie.html?id='+movie.movie_id" style="font-weight: bold" >elasticsearch</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-2"></div>
+        .card:hover {
+            background-color: #6c757d;
+            color: white;
+            opacity: 1;
+            transition-duration: 0.5s;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background-color: #f0f3f5;">
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="font-size: large;">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="index.html">douban</a>
 
-			</div>
-		</div>
+    <!-- Links -->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="search.html">搜索</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="movieclass.html">电影分类</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" id="login">
+        <li class="nav-item">
+            <a class="nav-link" href="login.html">登录</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="register.html">注册</a>
+        </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" id="touxiang">
+        <li class="nav-item">
+            <h3 style="color: white">Weclome Come</h3>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid" id="app">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <img src="img/douban.svg"/>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row" style="margin-top: -100px; ">
+        <div class="col-3"></div>
+        <div class="col-4">
+            <input type="text" class="form-control search" placeholder="搜索内容" v-model="keyword">
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-secondary mb-2 search" style="margin-left: 5px;"
+                    v-on:click="searchWithMysql">
+                mysql
+            </button>
+            <button type="button" class="btn btn-secondary mb-2 search" style="margin-left: 5px;"
+                    v-on:click="searchWithEs">ES
+            </button>
+            <span style="margin-left: 10px; color: green;">耗时：{{duration}}</span>
+        </div>
+        <div class="col-3"></div>
+    </div>
+    <div class="row">
+        <div v-show="isshow">
+            <p v-for="item in selectmovies">{{item}}</p>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="row">
+                <div class="col-3 mt-2" v-for="(movie,index) in movielist" style="margin-top: 20px;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p>导演:&nbsp{{movie.directors}}</p>
+                            <p>上映:&nbsp{{movie.year}}</p>
+                            <a class="showmysql" :href="'movie.html?id='+movie.movieId"
+                               style="font-weight: bold">mysql</a>
+                            <a class="showes " :href="'movie.html?id='+movie.movie_id" style="font-weight: bold">elasticsearch</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2"></div>
 
-		<script src="./js/vue.js"></script>
-		<script src="./js/axios.min.js"></script>
-		<script>
-			var app;
-			app = new Vue({
-				el: '#app',
-				data: {
-					duration: '',
-					keyword: '',
-					movielist: [],
-					searchtarget: '',
-				},
-				methods: {
-					searchWithMysql: function() {
-						console.log("searchWithMysql");
-						var that = this;
-						var param = {
-							"type": "mysql",
-							"keyword": that.keyword
-						};
-						axios.post("http://localhost:8080/search", param).then(function(response) {
-							console.log(response.data.list);
-							that.movielist = response.data.list;
-							that.duration = response.data.duration;
-							that.searchtarget = "mysql";
-						})
-					},
-					searchWithEs: function() {
-						console.log("searchWithEs");
-						var that = this;
-						var param = {
-							"type": "es",
-							"keyword": that.keyword
-						};
-						axios.post("http://localhost:8080/search", param).then(function(response) {
-							console.log(response.data.list)
-							that.movielist = response.data.list;
-							that.duration = response.data.duration;
-							that.searchtarget = "es";
-						})
-					},
-				},
-				watch:{
-					movielist: function () {
-						console.log(123)
-						this.$nextTick(function(){
-							console.log("重新渲染");
-							if(this.searchtarget=="mysql"){
-								for (var i=0;i<document.getElementsByClassName("showes").length;i++){
-									document.getElementsByClassName("showes")[i].style.display="none";
-									document.getElementsByClassName("showmysql")[i].style.display="";
-								}
-							}else if(this.searchtarget=="es"){
-								for (var i=0;i<document.getElementsByClassName("showmysql").length;i++){
-									document.getElementsByClassName("showmysql")[i].style.display="none";
-									document.getElementsByClassName("showes")[i].style.display="";
-								}
-							}
-						})
+    </div>
+</div>
+
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    var app;
+    app = new Vue({
+        el: '#app',
+        data: {
+            duration: '',
+            keyword: '',
+            movielist: [],
+            searchtarget: '',
+        },
+        methods: {
+            searchWithMysql: function () {
+                console.log("searchWithMysql");
+                var that = this;
+                var param = {
+                    "type": "mysql",
+                    "keyword": that.keyword
+                };
+                axios.post("http://localhost:8080/search", param).then(function (response) {
+                    console.log(response.data.list);
+                    that.movielist = response.data.list;
+                    that.duration = response.data.duration;
+                    that.searchtarget = "mysql";
+                })
+            },
+            searchWithEs: function () {
+                console.log("searchWithEs");
+                var that = this;
+                var param = {
+                    "type": "es",
+                    "keyword": that.keyword
+                };
+                axios.post("http://localhost:8080/search", param).then(function (response) {
+                    console.log(response.data.list)
+                    that.movielist = response.data.list;
+                    that.duration = response.data.duration;
+                    that.searchtarget = "es";
+                })
+            },
+        },
+        watch: {
+            movielist: function () {
+                console.log(123)
+                this.$nextTick(function () {
+                    console.log("重新渲染");
+                    if (this.searchtarget == "mysql") {
+                        for (var i = 0; i < document.getElementsByClassName("showes").length; i++) {
+                            document.getElementsByClassName("showes")[i].style.display = "none";
+                            document.getElementsByClassName("showmysql")[i].style.display = "";
+                        }
+                    } else if (this.searchtarget == "es") {
+                        for (var i = 0; i < document.getElementsByClassName("showmysql").length; i++) {
+                            document.getElementsByClassName("showmysql")[i].style.display = "none";
+                            document.getElementsByClassName("showes")[i].style.display = "";
+                        }
+                    }
+                })
 
 
-					}
-				},
-				created: function() {
-					// this.getMovies();
-					if(sessionStorage.getItem("userid")!=null){
-						document.getElementById('login').style.display = "none";
-						document.getElementById('touxiang').style.display = "";
-					}else{
-						document.getElementById('login').style.display = "";
-						document.getElementById('touxiang').style.display = "none";
-					}
+            }
+        },
+        created: function () {
+            // this.getMovies();
+            if (sessionStorage.getItem("userid") != null) {
+                document.getElementById('login').style.display = "none";
+                document.getElementById('touxiang').style.display = "";
+            } else {
+                document.getElementById('login').style.display = "";
+                document.getElementById('touxiang').style.display = "none";
+            }
 
-				},
-			})
-		</script>
-	</body>
+        }
+    })
+</script>
+</body>
 
 </html>
