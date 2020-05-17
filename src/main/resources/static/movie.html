@@ -228,10 +228,18 @@
             if (sessionStorage.getItem("userid") != null) {
                 document.getElementById('login').style.display = "none";
                 document.getElementById('touxiang').style.display = "";
+                console.log("记录添加成功");
+                var record = {
+                    "userid": sessionStorage.getItem("userid"),
+                    "movieid": window.location.search.substring(1),
+                };
+                console.log(record);
+                axios.post("http://localhost:8080/record", record);
+
             } else {
                 document.getElementById('login').style.display = "";
                 document.getElementById('touxiang').style.display = "none";
-            }
+            };
         }
     })
 </script>

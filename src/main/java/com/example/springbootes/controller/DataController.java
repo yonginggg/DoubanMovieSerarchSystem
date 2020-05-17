@@ -112,29 +112,12 @@ public class DataController {
         return mysqlBlogs;
     }
 
-    // 根据movieID查看电影详情
-//    @PostMapping("/movie")
-//    public Object movie( String movieID){ ;
-//        List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByMovieID(movieID);
-//        return mysqlBlogs;
-//    }
     @GetMapping("/movie/{id}")
     public Object movie(@PathVariable("id") String movieID){
         List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByMovieID(movieID);
         MysqlBlog blog = mysqlBlogs.get(0);
         return blog;
     }
-
-    // 根据条件选择筛选
-//    @PostMapping("/choice")
-//    public Object choice(@RequestBody String genresVal,String countriesVal,String yearVal){ ;
-//        if(genresVal.equals(""))
-//            genresVal = "全部类型";
-//        if(countriesVal.equals("全部地区"))
-//            countriesVal = "";
-//        List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByChoice(genresVal,countriesVal,yearVal);
-//        return mysqlBlogs;
-//    }
 
     // 根据条件选择筛选
     @PostMapping("/choice")
@@ -172,18 +155,16 @@ public class DataController {
             default:
                 yearVal1 = "0";yearVal2 = "999999";break;
         }
+        List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByChoiceRating(genresVal,countriesVal,yearVal1,yearVal2);
         switch(sortVal){
             case "豆瓣高分":
-                sortVal = "e.rating desc";break;
+                mysqlBlogs = mysqlBlogRepository.queryByChoiceRating(genresVal,countriesVal,yearVal1,yearVal2);
             case "最新上映":
-                sortVal = "e.year desc";break;
+                mysqlBlogs = mysqlBlogRepository.queryByChoiceYear(genresVal,countriesVal,yearVal1,yearVal2);
             case "热门电影":
-                sortVal = "e.ratingsCount desc";break;
+                mysqlBlogs = mysqlBlogRepository.queryByChoiceRatingCount(genresVal,countriesVal,yearVal1,yearVal2);
             default:
-                sortVal = "e.rating desc";break;
         }
-
-        List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByChoice(genresVal,countriesVal,yearVal1,yearVal2,sortVal);
         return mysqlBlogs;
     }
 

@@ -87,9 +87,14 @@ public interface MysqlBlogRepository extends JpaRepository<MysqlBlog,Integer> {
      * 根据条件选择筛选
      * @return
      */
-    @Query("select e from MysqlBlog e where e.genres like concat('%',:genresVal,'%') and e.countries like concat('%',:countriesVal,'%') and e.year >= :yearVal1 and e.year <= :yearVal2 order by :sortVal")
-    List<MysqlBlog> queryByChoice(String genresVal,String countriesVal,String yearVal1,String yearVal2,String sortVal);
+    @Query("select e from MysqlBlog e where e.genres like concat('%',:genresVal,'%') and e.countries like concat('%',:countriesVal,'%') and e.year >= :yearVal1 and e.year <= :yearVal2 order by e.rating desc")
+    List<MysqlBlog> queryByChoiceRating(String genresVal,String countriesVal,String yearVal1,String yearVal2);
 
+    @Query("select e from MysqlBlog e where e.genres like concat('%',:genresVal,'%') and e.countries like concat('%',:countriesVal,'%') and e.year >= :yearVal1 and e.year <= :yearVal2 order by e.year desc")
+    List<MysqlBlog> queryByChoiceYear(String genresVal,String countriesVal,String yearVal1,String yearVal2);
+
+    @Query("select e from MysqlBlog e where e.genres like concat('%',:genresVal,'%') and e.countries like concat('%',:countriesVal,'%') and e.year >= :yearVal1 and e.year <= :yearVal2 order by e.ratingsCount desc")
+    List<MysqlBlog> queryByChoiceRatingCount(String genresVal,String countriesVal,String yearVal1,String yearVal2);
     /**
      * 模糊查询
      * @param keyword
