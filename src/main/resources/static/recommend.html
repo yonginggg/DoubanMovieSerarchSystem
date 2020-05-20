@@ -4,6 +4,7 @@
     <title>电影推荐</title>
     <link rel="icon" href="./img/电影.png" sizes="32x32">
     <meta charset="utf-8">
+    <meta name="referrer" content="no-referrer"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
@@ -12,21 +13,6 @@
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <style>
-        .el-carousel__item h3 {
-            color: #475669;
-            font-size: 14px;
-            opacity: 0.75;
-            line-height: 200px;
-            margin: 0;
-        }
-
-        .el-carousel__item:nth-child(2n) {
-            background-color: #99a9bf;
-        }
-
-        .el-carousel__item:nth-child(2n+1) {
-            background-color: #d3dce6;
-        }
     </style>
 </head>
 <body style="background-color: #f0f3f5;">
@@ -58,17 +44,65 @@
     </ul>
 </nav>
 <div class="container-fluid" id="app">
+<!--    <button type="button" class="btn btn-primary" @click="meme">主要按钮</button>-->
+    <el-divider content-position="left">{{movietype}}片</el-divider>
     <div class="row mt-5">
-        <div class="col-2"></div>
-        <div class="col-8">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
             <el-carousel :interval="4000" type="card" height="500px">
-                <el-carousel-item v-for="item in 6" :key="item">
-<!--                    <h3 class="medium">{{ item }}</h3>-->
-                    <img src="img/1.jpg">
+                <el-carousel-item v-for="item in lunBoImages" :key="item">
+                    <h3 class="medium">{{ item.title }}</h3>
+                    <a :href="'movie.html?id='+item.movieId">
+                        <img referrer="no-referrer|origin|unsafe-url" :src="item.images">
+                    </a>
+
                 </el-carousel-item>
             </el-carousel>
         </div>
         <div class="col-2"></div>
+    </div>
+    <el-divider content-position="left">{{CastType}}主演电影</el-divider>
+    <div class="row mt-3">
+        <div class="col-1"></div>
+        <div class="col-10" >
+            <div class="row">
+                <div class="col-2 mt-2" v-for="(movie,index) in CastMovies" v-if="index < 6" :key='index'>
+                    <div class="card">
+                        <div class="card-body">
+                            <a :href="'movie.html?id='+movie.movie_id" style="font-weight: bold">
+                                <img :src="movie.images" alt="" style="width: 100%">
+                            </a>
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p>导演:&nbsp{{movie.directors}}</p>
+                            <p>上映:&nbsp{{movie.year}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+    <el-divider content-position="left">{{DirectorType}}导演电影</el-divider>
+    <div class="row mt-3">
+        <div class="col-1"></div>
+        <div class="col-10" >
+            <div class="row">
+                <div class="col-2 mt-2" v-for="(movie,index) in DirectorMovies" v-if="index < 6" :key='index'>
+                    <div class="card">
+                        <div class="card-body">
+                            <a :href="'movie.html?id='+movie.movie_id" style="font-weight: bold">
+                                <img :src="movie.images" alt="" style="width: 100%">
+                            </a>
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p>导演:&nbsp{{movie.directors}}</p>
+                            <p>上映:&nbsp{{movie.year}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
     </div>
 </div>
 
@@ -80,19 +114,46 @@
     app = new Vue({
         el: '#app',
         data: {
-            movielist: [],
+            movietype:'',
+            lunBoImages: [],
+            // test: false,
+            CastMovies: [],
+            CastType:'',
+            DirectorMovies:[],
+            DirectorType:'',
         },
         methods: {
+            meme: function () {
 
+            }
         },
         created: function () {
             if (sessionStorage.getItem("userid") != null) {
                 document.getElementById('login').style.display = "none";
                 document.getElementById('touxiang').style.display = "";
+                var that=this;
+                axios.get("http://localhost:8080/genreCommand/"+sessionStorage.getItem("userid") ).then(function (response) {
+                        // that.test = true;
+                        that.lunBoImages = response.data.list;
+                        that.movietype = response.data.type;
+                        console.log(that.lunBoImages);
+                        // console.log(that.test);
+                    }
+                );
+                axios.get("http://localhost:8080/castCommand/"+sessionStorage.getItem("userid") ).then(function (response) {
+                    that.CastMovies = response.data.list;
+                    that.CastType = response.data.type;
+                });
+                axios.get("http://localhost:8080/directorCommand/"+sessionStorage.getItem("userid") ).then(function (response) {
+                    that.DirectorMovies = response.data.list;
+                    that.DirectorType = response.data.reason;
+                })
             } else {
                 document.getElementById('login').style.display = "";
                 document.getElementById('touxiang').style.display = "none";
             }
+        },
+        mounted: function(){
 
         }
     })

@@ -16,11 +16,9 @@ import org.springframework.util.DigestUtils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 @RestController
 @Slf4j
 public class DataController {
@@ -200,6 +198,152 @@ public class DataController {
         return map;
     }
 
+    // 根据电影类别推荐
+    @GetMapping("/genreCommand/{id}")
+    public Object genreCommand(@PathVariable("id") String userid){
+        List<MysqlRecord> mysqlRecords = mysqlBlogRepository.queryRecord(userid);
+        // 电影ID列表
+        List<String> MovieIDList = new ArrayList<String>();
+        for(int i=0;i<mysqlRecords.size();i++){
+            MovieIDList.add(mysqlRecords.get(i).getMovieId());
+        }
+        String genres = new String();
+        String casts = new String();
+
+        for(int i=0;i<MovieIDList.size();i++){
+            String genre = mysqlBlogRepository.queryByMovieID(MovieIDList.get(i)).get(0).getGenres();
+            genre = genre.replace("[", "").replace("]","，").replace("'","").replace(" ","");
+            genres = genres + genre;
+
+            String cast = mysqlBlogRepository.queryByMovieID(MovieIDList.get(i)).get(0).getCasts();
+            cast = cast.replace("[", "").replace("]","，").replace("'","").replace(" ","");
+            casts = casts + cast;
+        }
+        String[] genreSplit = genres.split("，");
+        String[] castSplit = casts.split("，");
+
+
+        List<MysqlBlog> mysqlBlogs = mysqlBlogRepository.queryByChoiceRating(st(Arrays.asList(genreSplit)),"","0","999999");
+        List<MysqlBlog> genreBlogs = mysqlBlogs;
+        if (mysqlBlogs.size()>5) {
+            genreBlogs = TOP5(mysqlBlogs);
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("type",st(Arrays.asList(genreSplit)));
+        map.put("list", genreBlogs);
+        return map;
+    }
+
+    // 根据主演推荐
+    @GetMapping("/castCommand/{id}")
+    public Object castCommand(@PathVariable("id") String userid){
+        List<MysqlRecord> mysqlRecords = mysqlBlogRepository.queryRecord(userid);
+        // 电影ID列表
+        List<String> MovieIDList = new ArrayList<String>();
+        for(int i=0;i<mysqlRecords.size();i++){
+            MovieIDList.add(mysqlRecords.get(i).getMovieId());
+        }
+
+        String casts = new String();
+
+        for(int i=0;i<MovieIDList.size();i++){
+            String cast = mysqlBlogRepository.queryByMovieID(MovieIDList.get(i)).get(0).getCasts();
+            cast = cast.replace("[", "").replace("]","，").replace("'","").replace(" ","");
+            casts = casts + cast;
+        }
+        String[] castSplit = casts.split("，");
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        builder.should(QueryBuilders.matchPhraseQuery("casts", st(Arrays.asList(castSplit))));
+        String s = builder.toString();
+        Page<EsBlog> search = (Page<EsBlog>) esBlogRepository.search(builder);
+        List<EsBlog> castBlogs = search.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("type",st(Arrays.asList(castSplit)));
+        map.put("list", castBlogs);
+        return map;
+    }
+
+    // 根据导演推荐
+    @GetMapping("/directorCommand/{id}")
+    public Object directorCommand(@PathVariable("id") String userid){
+        List<MysqlRecord> mysqlRecords = mysqlBlogRepository.queryRecord(userid);
+        // 电影ID列表
+        List<String> MovieIDList = new ArrayList<String>();
+        for(int i=0;i<mysqlRecords.size();i++){
+            MovieIDList.add(mysqlRecords.get(i).getMovieId());
+        }
+
+        String directors = new String();
+
+        for(int i=0;i<MovieIDList.size();i++){
+            String director = mysqlBlogRepository.queryByMovieID(MovieIDList.get(i)).get(0).getDirectors();
+            directors = directors + "，" + director;
+        }
+        String[] directorSplit = directors.split("，");
+        BoolQueryBuilder builder = QueryBuilders.boolQuery();
+        builder.should(QueryBuilders.matchPhraseQuery("directors", st(Arrays.asList(directorSplit))));
+        String s = builder.toString();
+        Page<EsBlog> search = (Page<EsBlog>) esBlogRepository.search(builder);
+        List<EsBlog> directorBlogs = search.getContent();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("reason",st(Arrays.asList(directorSplit)));
+        map.put("list", directorBlogs);
+        return map;
+    }
+
+    // 获取前五
+    public static List<MysqlBlog> TOP5( List<MysqlBlog> items ){
+        List<MysqlBlog> a = new ArrayList<MysqlBlog>();
+        for(int i=0;i<5;i++){
+            a.add(items.get(i));
+        }
+        return a;
+    }
+
+    // list转map
+    public static Map<String,Integer> frequencyOfListElements( String[] items ) {
+        if (items == null || items.length == 0) return null;
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (String temp : items) {
+            Integer count = map.get(temp);
+            map.put(temp, (count == null) ? 1 : count + 1);
+        }
+        return map;
+    }
+
+    // 获取list中最多出现的元素及次数
+    public String st(List<String> list) {
+        String regex;
+        Pattern p;
+        Matcher m;
+
+        String tmp = "";
+        String tot_str = list.toString();
+        //System.out.println(tot_str);   //[aa, aa, aa, aa, bb, bb, cc, cc, dd, ed]
+        int max_cnt = 0;
+        String max_str = "";
+        for (String str : list) {
+            if (tmp.equals(str)) continue;
+            tmp = str;
+            regex = str;
+            p = Pattern.compile(regex);
+            m = p.matcher(tot_str);
+            int cnt = 0;
+            while (m.find()) {
+                cnt++;
+            }
+            //System.out.println(str + ":" + cnt);
+            if (cnt > max_cnt) {
+                max_cnt = cnt;
+                max_str = str;
+            }
+        }
+        return max_str;
+    }
+
     @Data
     public static class user{
         // mysql, es
@@ -223,7 +367,6 @@ public class DataController {
 
     @Data
     public static class movieclass{
-//        String genresVal,String countriesVal,String yearVal,String sortVal
         private String genresVal;
         private String countriesVal;
         private String yearVal;

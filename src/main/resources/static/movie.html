@@ -231,7 +231,7 @@
                 console.log("记录添加成功");
                 var record = {
                     "userid": sessionStorage.getItem("userid"),
-                    "movieid": window.location.search.substring(1),
+                    "movieid": getQueryVariable("id"),
                 };
                 console.log(record);
                 axios.post("http://localhost:8080/record", record);
