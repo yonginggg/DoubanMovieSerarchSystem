@@ -22,13 +22,20 @@ public interface MysqlBlogRepository extends JpaRepository<MysqlBlog,Integer> {
     List<MysqlUser> queryUser(String userID);
 
     /**
+     * 查找同标签用户
+     * @return
+     */
+    @Query("select e from MysqlUser e where e.label = :label and e.userid <> :userID")
+    List<MysqlUser> queryUserByLabel(String label, String userID);
+
+    /**
      * 注册
      * @return
      */
     @Transactional
     @Modifying
-    @Query(value = "insert into user(userid,userpwd) values(:userID,:userPwd)",nativeQuery = true)
-    int register(String userID,String userPwd);
+    @Query(value = "insert into user(userid,userpwd,label) values(:userID,:userPwd,:label)",nativeQuery = true)
+    int register(String userID,String userPwd, String label);
 
     /**
      * 登陆
@@ -45,6 +52,15 @@ public interface MysqlBlogRepository extends JpaRepository<MysqlBlog,Integer> {
     @Modifying
     @Query(value = "insert into record(userid,record_order,movie_id,record_time) values(:userID,:recordOrder,:movieId,:recordTime)",nativeQuery = true)
     int insertRecord(String userID, int recordOrder, String movieId, Date recordTime);
+
+    /**
+     * 修改用户标签
+     * @return
+     */
+    @Transactional
+    @Modifying
+    @Query(value = "update user set label=:label where userid=:userID",nativeQuery = true)
+    int updateLabel(String userID, String label);
 
     /**
      * 查询该用户最大浏览数

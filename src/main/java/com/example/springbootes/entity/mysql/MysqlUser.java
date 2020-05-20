@@ -14,4 +14,5 @@ public class MysqlUser {
     private Integer id;
     private String userid;               //用户ID
     private String userpwd;              //密码
+    private String label;
 }
