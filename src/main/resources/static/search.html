@@ -9,10 +9,14 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
     <style type="text/css">
         .search {
-            height: 70px;
+            height: 45px;
             font-size: 20px;
         }
 
@@ -67,7 +71,19 @@
     <div class="row" style="margin-top: -100px; ">
         <div class="col-3"></div>
         <div class="col-4">
-            <input type="text" class="form-control search" placeholder="搜索内容" v-model="keyword">
+<!--            <input type="text" class="form-control search" placeholder="搜索内容" v-model="keyword">-->
+            <el-row class="demo-autocomplete">
+            <el-col>
+                <el-autocomplete
+                        class="inline-input"
+                        v-model="keyword"
+                        :fetch-suggestions="querySearch"
+                        placeholder="你想看什么电影"
+                        @select="handleSelect"
+                        style="width: 500px"
+                ></el-autocomplete>
+            </el-col>
+            </el-row>
         </div>
         <div class="col-2">
             <button type="button" class="btn btn-secondary mb-2 search" style="margin-left: 5px;"
@@ -121,6 +137,9 @@
             keyword: '',
             movielist: [],
             searchtarget: '',
+            restaurants: [],
+            state1: '',
+            state2: ''
         },
         methods: {
             searchWithMysql: function () {
@@ -151,6 +170,20 @@
                     that.searchtarget = "es";
                 })
             },
+            querySearch(queryString, cb) {
+                var restaurants = this.restaurants;
+                var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+                // 调用 callback 返回建议列表的数据
+                cb(results);
+            },
+            createFilter(queryString) {
+                return (restaurant) => {
+                    return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+                };
+            },
+            handleSelect(item) {
+                console.log(item);
+            }
         },
         watch: {
             movielist: function () {
@@ -176,6 +209,21 @@
             if (sessionStorage.getItem("userid") != null) {
                 document.getElementById('login').style.display = "none";
                 document.getElementById('touxiang').style.display = "";
+                var that = this;
+                axios.get("http://localhost:8080/history/"+sessionStorage.getItem("userid") ).then(function (response) {
+                    var jsonstr="[]";
+                    var jsonarray = eval('('+jsonstr+')');
+                    for (var i = 0; i < response.data.length; i++) {
+                        var arr  =
+                            {
+                                "value" : response.data[i].title,
+                                "address" : response.data[i].year
+                            }
+                        jsonarray.push(arr);
+                    }
+                    console.log(jsonarray);
+                    that.restaurants = jsonarray
+                })
             } else {
                 document.getElementById('login').style.display = "";
                 document.getElementById('touxiang').style.display = "none";
