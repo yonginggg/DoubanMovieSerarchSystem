@@ -107,6 +107,27 @@
         </div>
         <div class="col-1"></div>
     </div>
+    <el-divider content-position="left" class="daoyan" id="director1">天涯知己</el-divider>
+    <div class="row mt-3 daoyan">
+        <div class="col-1"></div>
+        <div class="col-10" >
+            <div class="row">
+                <div class="col-2 mt-2" v-for="(movie,index) in FriendMovies" v-if="index < 6" :key='index'>
+                    <div class="card">
+                        <div class="card-body">
+                            <a :href="'movie.html?id='+movie.movieId" style="font-weight: bold">
+                                <img :src="movie.images" alt="" style="width: 100%">
+                            </a>
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p>导演:&nbsp{{movie.directors}}</p>
+                            <p>上映:&nbsp{{movie.year}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
 </div>
 
 <script src="./js/vue.js"></script>
@@ -124,6 +145,7 @@
             CastType:'',
             DirectorMovies:[],
             DirectorType:'',
+            FriendMovies:[],
         },
         methods: {
             meme: function () {
@@ -159,6 +181,9 @@
                         axios.get("http://localhost:8080/directorCommand/"+sessionStorage.getItem("userid") ).then(function (response) {
                             that.DirectorMovies = response.data.list;
                             that.DirectorType = response.data.reason;
+                        });
+                        axios.get("http://localhost:8080/labelCommand/"+sessionStorage.getItem("userid") ).then(function (response) {
+                            that.FriendMovies = response.data;
                         })
                     }
                 })

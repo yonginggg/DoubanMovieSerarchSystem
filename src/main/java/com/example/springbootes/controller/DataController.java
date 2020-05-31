@@ -654,6 +654,7 @@ public class DataController {
 
         ArrayList<MysqlBlog> mysqlBlogs = new ArrayList<>();
 
+        System.out.println(labelUserId);
         for(int i=0;i<MovieIDList.size();i++){
             MysqlBlog mysqlBlog = mysqlBlogRepository.queryByMovieID(MovieIDList.get(i)).get(0);
             mysqlBlogs.add(mysqlBlog);
